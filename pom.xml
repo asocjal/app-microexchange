@@ -84,6 +84,18 @@
 			<scope>test</scope>
 		</dependency>
 
+
+		<!-- UNDERTOW -->
+
+<!-- https://mvnrepository.com/artifact/io.undertow/undertow-core -->
+	<dependency>
+	    <groupId>io.undertow</groupId>
+	    <artifactId>undertow-core</artifactId>
+	    <version>2.0.22.Final</version>
+	</dependency>
+
+
+
 	</dependencies>
 
 
@@ -108,7 +120,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>lightech.microexchange.App</mainClass>
+							<mainClass>net.satopay.satoexchange.App</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
