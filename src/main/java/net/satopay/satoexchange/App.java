@@ -24,9 +24,9 @@ public class App {
     	System.out.println("Undertow");
     	
         Undertow server = Undertow.builder()
-                .addHttpListener(8080, "localhost")
+                .addHttpListener(8080, "0.0.0.0")
                 .setHandler(path()
-                        .addPrefixPath("/socket", websocket(new WebSocketConnectionCallback() {
+                        .addPrefixPath("/api", websocket(new WebSocketConnectionCallback() {
 
                             @Override
                             public void onConnect(WebSocketHttpExchange exchange, WebSocketChannel channel) {
@@ -45,7 +45,7 @@ public class App {
                             }
 
                         }))
-                        .addPrefixPath("/", resource(new PathResourceManager(Paths.get("/home/cd/git/app-microexchange/src/main/resources/web"), 100))
+                        .addPrefixPath("/", resource(new PathResourceManager(Paths.get("/root/microex/web"), 100))
                                 .setDirectoryListingEnabled(true)))
                 .build();
 

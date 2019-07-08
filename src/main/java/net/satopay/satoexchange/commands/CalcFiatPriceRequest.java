@@ -5,11 +5,11 @@ import bittech.lib.utils.Require;
 
 public class CalcFiatPriceRequest implements Request {
 
-	public String bankName;
+	public String bankId;
 	public int satoshis;
 
 	public CalcFiatPriceRequest(final String bankName, final int satoshis) {
-		this.bankName = Require.notNull(bankName, "bankName");
+		this.bankId = Require.notNull(bankName, "bankName");
 		this.satoshis = Require.inRange(satoshis, 0, 1000000, "satoshis");
 	}
 	

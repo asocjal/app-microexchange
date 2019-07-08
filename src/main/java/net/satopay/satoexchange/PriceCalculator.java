@@ -16,7 +16,7 @@ public class PriceCalculator {
 
 	public static class Calculation {
 		public String id;
-		public String bankName;
+		public String bankId;
 		public int satoshis;
 		public BigDecimal price;
 	}
@@ -59,7 +59,7 @@ public class PriceCalculator {
 	public synchronized Calculation calculate(String bankName, int satoshis) {
 		Calculation calc = new Calculation();
 		calc.id = "calc_" + (long) (Math.random() * Long.MAX_VALUE);
-		calc.bankName = Require.notEmpty(bankName, "bankName");
+		calc.bankId = Require.notEmpty(bankName, "bankName");
 		calc.satoshis = Require.inRange(satoshis, 0, 1000000, "satoshis");
 		calc.price = satPriceZl.multiply(new BigDecimal(satoshis), new MathContext(2));
 		caluclatons.put(calc.id, calc);

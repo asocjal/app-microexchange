@@ -4,11 +4,11 @@ import bittech.lib.protocol.Response;
 import bittech.lib.utils.Require;
 
 public class CheckForFiatsReceivedResponse implements Response {
-
-	public final boolean done;
 	
-	public CheckForFiatsReceivedResponse(final boolean done) {
-		this.done = Require.notNull(done, "done");
+	public final String status;
+	
+	public CheckForFiatsReceivedResponse(final String status) {
+		this.status = Require.notNull(status, "status");
 	}
 
 }

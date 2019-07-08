@@ -5,11 +5,11 @@ import bittech.lib.protocol.Command;
 public class NewPaymentCommand extends Command<NewPaymentRequest, NewPaymentResponse> {
 
 	public static NewPaymentCommand createStub() {
-		return new NewPaymentCommand("");
+		return new NewPaymentCommand("", "");
 	}
 	
-	public NewPaymentCommand(String calculationId) {
-		this.request = new NewPaymentRequest(calculationId);
+	public NewPaymentCommand(final String calculationId, final String lnInvoice) {
+		this.request = new NewPaymentRequest(calculationId, lnInvoice);
 	}
 
 }
