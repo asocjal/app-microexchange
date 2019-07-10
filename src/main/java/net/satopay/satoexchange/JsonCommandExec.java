@@ -54,6 +54,7 @@ public class JsonCommandExec {
 		return toJson(new Message(requestId, commandName, errorResponse));
 	}
 
+	@SuppressWarnings("unchecked")
 	private void handleResponse(Message message) {
 		Require.notNull(message, "message");
 		if ("response".equals(message.type) == false) {
@@ -61,6 +62,7 @@ public class JsonCommandExec {
 					"Cannot handle response. Given message is not response type, but it is: " + message.type, null);
 		}
 
+		@SuppressWarnings("rawtypes")
 		Command command = (Command) sentCommands.get(message.id);
 
 		if (command == null) {
@@ -75,12 +77,14 @@ public class JsonCommandExec {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void handleError(Message message) {
 		Require.notNull(message, "message");
 		if ("error".equals(message.type) == false) {
 			throw new StoredException("Cannot handle error. Given message is not error type but it is: " + message.type,
 					null);
 		}
+		@SuppressWarnings("rawtypes")
 		Command command = (Command) sentCommands.get(message.id);
 
 		if (command == null) {
@@ -121,6 +125,7 @@ public class JsonCommandExec {
 				return respError(message.id, message.name, new ErrorResponse(sex.getId(), sex.getMessage()));
 			}
 
+			@SuppressWarnings("unchecked")
 			Command<Request, Response> command = (Command<Request, Response>) method.invoke(null);
 			command.setTimeout(message.timeout);
 
