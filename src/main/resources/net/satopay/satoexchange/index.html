@@ -1,15 +1,102 @@
+<!DOCTYPE html>
 <html>
 
 <head>
-
-    <script src="index.js"></script>
-
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Stronka HTML</title>
+	<link rel="stylesheet" href="style.css">
+	<script src="index.js"></script>
 </head>
 
 <body>
+	<div class="container">
+		<h3 class="text-center">Welcome to <span id="exName">!name!</span> exchange</h3>
+		<hr>
+		<div id="error" hidden="true">
+			<p>Internal error! Please close this page and use original exchange link provided by Satopay.</p>
+			<p>Error details: </p>
+			<p id="errorDetails">!details!</p>
+		</div>
+		<div id="ok" hidden="true">
+			<p>You can buy <strong>10000 satoshis</strong> for <strong id="amount1">5.64 zł</strong> using bank
+				transfer.
+			</p>
+			<div class="row mb-4">
+				<div class="col-2 text-right">
+					LN invoice:
+				</div>
+				<div class="col-10">
+					<div class="textarea-text">
+						Inbc1pwjnyvqpp5qjsc3rnnylvzrz2.e3nz8fz7v4ykyljx0xdqdkhc3yfjjgc5qm7sdqqcqzpgea7xw2y4fxp5azm64wcznaknaetzvwswweyqhle2dr8gjOj4cn5sz5f27a.ztkrfj7wumgr9u5ssu41c66hdcwphu7a9q6um8fc38sqrs2j3y
+					</div>
+				</div>
+			</div>
 
-Halo baby!
-<p>
-<img src="zeby.jpg" width="120" height="80">
+			<div class="row">
+				<div class="col-2 text-right">
+					Your bank:
+				</div>
+				<div class="col-10">
+					<img src="bank.png" style="width: 200px;" alt="Nazwa banku" title="Nazwa banku" id="bankLogo">
+					<p>WARNING! Use bank selected above to send fund. Only this way funds will be send fast enough to
+						complete operation! If you prefer to use other bank, just close this page and select different
+						bank on satopay page.</p>
+				</div>
+			</div>
+			<hr>
+			<div class="row mb-2">
+				<div class="col-2 text-right">
+					Number:
+				</div>
+				<div class="col-10">
+					<strong id="bankNumber">56 0965 6800 6565 0001 3478</strong>
+				</div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-2 text-right">
+					Amount:
+				</div>
+				<div class="col-10">
+					<strong id="amount2">5.64 zł</strong>
+				</div>
+			</div>
+			<div class="row mb-2">
+				<div class="col-2 text-right">
+					Title:
+				</div>
+				<div class="col-10">
+					<strong id="title">pay_7154653906720418816</strong>
+				</div>
+			</div>
+			<div class="row-button">
+				<a href="#">
+					<div class="button text-center">
+						Go to you bank>
+					</div>
+				</a>
+			</div>
+			<hr>
+			<div class="row mb-2">
+				<div class="col-2 text-right">
+					Status:
+				</div>
+				<div class="col-10">
+					<strong>Waiting for bank transfer</strong>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-2 text-right">
+					Remainig:
+				</div>
+				<div class="col-10">
+					<strong>9 min 55 sec</strong>
+				</div>
+			</div>
+		</div>
+		<hr>
+		<p class="text-center">Any issue or question? Send us e-mail: <a href="#" id="email">!email!></a></p>
+	</div>
 </body>
+
 </html>

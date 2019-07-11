@@ -152,6 +152,7 @@ public class JsonCommandExec {
 
 					} catch (Exception e) {
 						StoredException sex = new StoredException("Cannot process command", e);
+						command.response = null;
 						command.error = new ErrorResponse(sex);
 					}
 				});
