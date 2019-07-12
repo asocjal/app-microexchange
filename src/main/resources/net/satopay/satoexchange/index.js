@@ -46,8 +46,12 @@ function injectGetInfoCommandData(data) {
 }
 
 function injectNewPaymentCommandData(data) {
-  document.getElementById("amount1").textContent = data.body.amount + " zł";
-  document.getElementById("amount2").textContent = data.body.amount + " zł";
+  document.getElementById("amount1").textContent = data.body.amount.toFixed(2) + " zł";
+  document.getElementById("amount2").textContent = data.body.amount.toFixed(2) + " zł";
+  document.getElementById("bankNumber").textContent = data.body.bank.accountNumber;
+  document.getElementById("bankUrl").href = data.body.bank.pageUrl;
+  document.getElementById("bankLogo").href = data.body.bank.iconUrl;
+  
   document.getElementById("ok").hidden = false;
 }
 
@@ -61,14 +65,29 @@ function injectErrorDetails(data) {
   document.getElementById("errorDetails").innerHTML = text;
 }
 
+function injectErrorString(data) {
+  document.getElementById("errorDetails").innerHTML = data;
+}
+
 socket.onerror = function(error) {
   alert(`[error] ${error.message}`);
 };
 
 function buildNewPaymentCommandRequest() {
+
+  var url_string = window.location.href; // "http://www.example.com/t.html?a=1&b=3&c=m2-m3-m4-m5"; //window.location.href
+  var url = new URL(url_string);
+
   var body = {};
-  body.calculationId = "calc_4906277691219858432";
-  body.lnInvoice = "lnbc1pwjrwvqpp5qjsc3rnnylvzrz2ze3nz8fz7v4ykyljx0xdqdkhc3yfjjgc5qm7sdqqcqzpgea7xw2y4fxp5azm64wcznaknaetzvvvswweyqhle2dr8gj0j4cn5sz5f27azztkrfj7wumgr9u5ssu4lc66hdcwphu7a9q6um8fc38sqrs2j3y";
+  body.calculationId = url.searchParams.get("calculationId"); // "calc_4906277691219858432";
+  body.lnInvoice = url.searchParams.get("lnInvoice");; // "lnbc1pwjrwvqpp5qjsc3rnnylvzrz2ze3nz8fz7v4ykyljx0xdqdkhc3yfjjgc5qm7sdqqcqzpgea7xw2y4fxp5azm64wcznaknaetzvvvswweyqhle2dr8gj0j4cn5sz5f27azztkrfj7wumgr9u5ssu4lc66hdcwphu7a9q6um8fc38sqrs2j3y";
+  
+  document.getElementById("lnInvoice").innerHTML = body.lnInvoice;
+  
+  // if(body.calculationId == null) {
+  //   injectErrorString("No calculationId parameter in URL");
+  // }
+  
   return body;
 }
 

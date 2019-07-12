@@ -3,6 +3,7 @@ package net.satopay.satoexchange;
 import bittech.lib.protocol.Command;
 import bittech.lib.protocol.Listener;
 import bittech.lib.protocol.common.NoDataResponse;
+import bittech.lib.utils.Require;
 import bittech.lib.utils.exceptions.StoredException;
 import net.satopay.satoexchange.PriceCalculator.Calculation;
 import net.satopay.satoexchange.commands.CalcFiatPriceCommand;
@@ -51,8 +52,8 @@ public class ApiListener implements Listener {
 			cmd.response = new NoDataResponse();
 		} else if (command instanceof NewPaymentCommand) {
 			NewPaymentCommand cmd = (NewPaymentCommand) command;
-			Calculation calc = priceCalculator.get(cmd.getRequest().calculationId);
-			Payment payment = payments.newPayment(calc, cmd.getRequest().lnInvoice);
+			Calculation calc = priceCalculator.get(Require.notNull(cmd.getRequest().calculationId, "calculationId"));
+			Payment payment = payments.newPayment(calc, Require.notNull(cmd.getRequest().lnInvoice, "lnInvoice"));
 			cmd.response = new NewPaymentResponse();
 			cmd.response.amount = payment.calculation.price;
 			cmd.response.bank = banks.getBank(payment.calculation.bankId);
