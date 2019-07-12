@@ -24,3 +24,6 @@ hs_err_pid*
 /target/
 /.classpath
 /.project
+/banks.json
+/calculations.json
+/payments.json

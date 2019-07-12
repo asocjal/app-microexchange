@@ -90,6 +90,5 @@ function randomInt() {
 
 function process(response)
 {
-  // alert("parse: " + response);
 	return JSON.parse(response)
 }
