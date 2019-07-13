@@ -1,23 +1,24 @@
-package net.satopay.satoexchange;
+package net.satopay.satoexchange.web;
 
 import bittech.lib.protocol.Command;
 import bittech.lib.protocol.Listener;
 import bittech.lib.protocol.common.NoDataResponse;
 import bittech.lib.utils.Require;
 import bittech.lib.utils.exceptions.StoredException;
+import lib.satopay.commands.CalcFiatPriceCommand;
+import lib.satopay.commands.CalcFiatPriceResponse;
+import net.satopay.satoexchange.PriceCalculator;
 import net.satopay.satoexchange.PriceCalculator.Calculation;
-import net.satopay.satoexchange.commands.CalcFiatPriceCommand;
-import net.satopay.satoexchange.commands.CalcFiatPriceResponse;
-import net.satopay.satoexchange.commands.CheckForFiatsReceivedCommand;
-import net.satopay.satoexchange.commands.CheckForFiatsReceivedResponse;
-import net.satopay.satoexchange.commands.GetInfoCommand;
-import net.satopay.satoexchange.commands.GetInfoResponse;
-import net.satopay.satoexchange.commands.NewPaymentCommand;
-import net.satopay.satoexchange.commands.NewPaymentResponse;
 import net.satopay.satoexchange.commands.dev.FiatsReceivedCommand;
 import net.satopay.satoexchange.fiat.Banks;
 import net.satopay.satoexchange.fiat.Payments;
 import net.satopay.satoexchange.fiat.Payments.Payment;
+import net.satopay.satoexchange.web.commands.GetPaymentStatusCommand;
+import net.satopay.satoexchange.web.commands.GetPaymentStatusResponse;
+import net.satopay.satoexchange.web.commands.GetInfoCommand;
+import net.satopay.satoexchange.web.commands.GetInfoResponse;
+import net.satopay.satoexchange.web.commands.NewPaymentCommand;
+import net.satopay.satoexchange.web.commands.NewPaymentResponse;
 
 public class ApiListener implements Listener {
 
@@ -28,7 +29,7 @@ public class ApiListener implements Listener {
 	@Override
 	public Class<?>[] getListeningCommands() {
 		return new Class<?>[] { GetInfoCommand.class, CalcFiatPriceCommand.class, NewPaymentCommand.class,
-				FiatsReceivedCommand.class, CheckForFiatsReceivedCommand.class };
+				FiatsReceivedCommand.class, GetPaymentStatusCommand.class };
 	}
 
 	@Override
@@ -59,9 +60,9 @@ public class ApiListener implements Listener {
 			cmd.response.bank = banks.getBank(payment.calculation.bankId);
 			cmd.response.timeoutSec = payment.timeoutSec;
 			cmd.response.title = payment.id;
-		} else if (command instanceof CheckForFiatsReceivedCommand) {
-			CheckForFiatsReceivedCommand cmd = (CheckForFiatsReceivedCommand) command;
-			cmd.response = new CheckForFiatsReceivedResponse(payments.getStatus(cmd.getRequest().title));
+		} else if (command instanceof GetPaymentStatusCommand) {
+			GetPaymentStatusCommand cmd = (GetPaymentStatusCommand) command;
+			cmd.response = payments.getStatus(cmd.getRequest().title);
 		} else {
 			throw new StoredException("Unsupported command type: " + command.type, null);
 		}

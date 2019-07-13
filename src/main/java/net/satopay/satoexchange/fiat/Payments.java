@@ -3,6 +3,7 @@ package net.satopay.satoexchange.fiat;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import bittech.lib.utils.Require;
 import bittech.lib.utils.exceptions.StoredException;
 import bittech.lib.utils.json.JsonBuilder;
 import net.satopay.satoexchange.PriceCalculator.Calculation;
+import net.satopay.satoexchange.web.commands.GetPaymentStatusResponse;
 
 public class Payments {
 
@@ -18,6 +20,7 @@ public class Payments {
 		public Calculation calculation;
 		public String lnInvocie;
 		public int timeoutSec;
+		public long expireTime;
 	}
 
 	private final Map<String, Payment> waitingPayments = new HashMap<String, Payment>();
@@ -60,6 +63,7 @@ public class Payments {
 		p.calculation = Require.notNull(calculation, "calculation");
 		p.lnInvocie = Require.notEmpty(lnInvoice, "lnInvoice"); // TODO: Validate invoice and compare with calculation
 		p.timeoutSec = 10 * 60;
+		p.expireTime = (new Date()).getTime() + p.timeoutSec * 1000L;
 		waitingPayments.put(p.id, p);
 		save();
 		return p;
@@ -74,11 +78,31 @@ public class Payments {
 		save();
 	}
 
-	public synchronized String getStatus(String id) {
-		if(waitingPayments.get(id) != null) {
-			return "Waiting for bank transfer...";
-		} else if(donePayments.get(id) != null) {
-			return "Succeeded! Fiat funds received :)";
+	public synchronized GetPaymentStatusResponse getStatus(String id) {
+		GetPaymentStatusResponse resp = new GetPaymentStatusResponse();
+		Payment payment = null;
+		if ((payment = waitingPayments.get(id)) != null) {
+			
+			long timeDelta = (payment.expireTime - new Date().getTime()) / 1000;
+
+			if (timeDelta <= 0) {
+				resp.status = "Expired :(";
+				resp.timeLeft = "Close this page and select exchange provider again";
+			} else {
+				resp.status = "Waiting for bank transfer...";
+				long min = timeDelta / 60;
+				long sec = timeDelta - min * 60;
+				resp.timeLeft = "" + min + " min. " + sec + " sec.";
+			}
+			return resp;
+
+		} else if (donePayments.get(id) != null) {
+			resp.status = "Succeeded! Fiat funds received :)";
+			resp.timeLeft = "Nothing ore to do. You can close this page";
+			return resp;
+		}
+		if (payment != null) {
+
 		}
 		throw new StoredException("No such payment id: " + id, null);
 	}

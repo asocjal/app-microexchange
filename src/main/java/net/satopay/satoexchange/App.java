@@ -23,6 +23,7 @@ import io.undertow.websockets.core.BufferedTextMessage;
 import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.core.WebSockets;
 import io.undertow.websockets.spi.WebSocketHttpExchange;
+import net.satopay.satoexchange.web.ApiModule;
 
 public class App {
 
@@ -30,6 +31,7 @@ public class App {
 
 	public static void main(final String[] args) throws Exception {
 //		testHomePage();
+//		satoClick();
 		startServer();
 	}
 
@@ -46,10 +48,10 @@ public class App {
 							@Override
 							protected void onFullTextMessage(WebSocketChannel channel, BufferedTextMessage message) {
 								final String messageData = message.getData();
-								for (WebSocketChannel session : channel.getPeerConnections()) {
+//								for (WebSocketChannel session : channel.getPeerConnections()) {
 									String ret = apiModule.onReceived(messageData);
-									WebSockets.sendText(ret, session, null);
-								}
+									WebSockets.sendText(ret, channel, null);
+//								}
 							}
 						});
 						channel.resumeReceives();
@@ -70,10 +72,25 @@ public class App {
 
 		server.start();
 	}
-	
+
+	private static void satoClick() throws Exception {
+		System.setProperty("webdriver.gecko.driver", "/home/cd/satoprojects/satoexchange/geckodriver-v0.24.0-linux64/geckodriver");
+
+		WebDriver driver = new FirefoxDriver();
+		try {
+			driver.get("https://tbtc.bitaps.com/");
+			WebElement button = driver.findElement(By.id("receive"));
+			for (;;) {
+				Thread.sleep(10000);
+				button.click();
+			}
+		} finally {
+			driver.close();
+		}
+	}
+
 	private static void testHomePage() throws Exception {
-		System.setProperty("webdriver.gecko.driver",
-				"firefox/geckodriver");
+		System.setProperty("webdriver.gecko.driver", "firefox/geckodriver");
 
 		FirefoxOptions firefoxOptions = new FirefoxOptions();
 		firefoxOptions.setBinary("firefox/firefox");
@@ -102,5 +119,5 @@ public class App {
 			driver.close();
 		}
 	}
-	
+
 }

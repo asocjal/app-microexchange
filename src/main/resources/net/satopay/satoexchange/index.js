@@ -14,13 +14,14 @@ socket.onmessage = function(event) {
 
 socket.onclose = function(event) {
   if (event.wasClean) {
-    alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+    injectErrorString(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
   } else {
     // e.g. server process killed or network down
     // event.code is usually 1006 in this case
-    alert('[close] Connection died');
+    injectErrorString('[close] Connection died');
   }
 };
+
 
 function injectData(data) {
   if(document.getElementById("error").hidden == false) {
@@ -29,13 +30,14 @@ function injectData(data) {
   }
   if(data.type === "error") {
     injectErrorDetails(data);
-    document.getElementById("error").hidden = false;
     return;
   }
   if(data.name.includes("GetInfoCommand")) {
     injectGetInfoCommandData(data);
   } else if(data.name.includes("NewPaymentCommand")) {
     injectNewPaymentCommandData(data);
+  } else if(data.name.includes("GetPaymentStatusCommand")) {
+    injectPaymentStatusCommandData(data);
   }
 }
 
@@ -51,8 +53,21 @@ function injectNewPaymentCommandData(data) {
   document.getElementById("bankNumber").textContent = data.body.bank.accountNumber;
   document.getElementById("bankUrl").href = data.body.bank.pageUrl;
   document.getElementById("bankLogo").href = data.body.bank.iconUrl;
+  document.getElementById("title").textContent = data.body.title;
   
   document.getElementById("ok").hidden = false;
+
+  window.setInterval(function(){
+    var body = {};
+    body.title = document.getElementById("title").textContent;
+    socket.send(buildCommand("GetPaymentStatusCommand", body));
+  }, 100);
+}
+
+function injectPaymentStatusCommandData(data) {
+  document.getElementById("status").textContent = data.body.status;
+  document.getElementById("timeLeft").textContent = data.body.timeLeft;
+  // clearInterval() 
 }
 
 function injectErrorDetails(data) {
@@ -63,14 +78,18 @@ function injectErrorDetails(data) {
     err = err.cause;
   }
   document.getElementById("errorDetails").innerHTML = text;
+  document.getElementById("error").hidden = false;
+  document.getElementById("ok").hidden = true;
 }
 
 function injectErrorString(data) {
   document.getElementById("errorDetails").innerHTML = data;
+  document.getElementById("error").hidden = false;
+  document.getElementById("ok").hidden = true;
 }
 
 socket.onerror = function(error) {
-  alert(`[error] ${error.message}`);
+  injectErrorString(`[error] ${error.message}`);
 };
 
 function buildNewPaymentCommandRequest() {
@@ -94,7 +113,7 @@ function buildNewPaymentCommandRequest() {
 function buildCommand(name, body) {
     var cmd = {};
     cmd.id = randomInt();
-    cmd.name = "net.satopay.satoexchange.commands." + name;
+    cmd.name = "net.satopay.satoexchange.web.commands." + name;
     cmd.type = "request";
     cmd.timeout = 10000;
     cmd.body = body;

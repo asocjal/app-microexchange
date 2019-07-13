@@ -1,4 +1,4 @@
-package net.satopay.satoexchange;
+package net.satopay.satoexchange.web;
 
 import java.lang.reflect.Method;
 import java.util.Date;

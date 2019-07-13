@@ -43,7 +43,7 @@ public class AppTest extends TestCase {
 
 	public void atestHomePage() throws Exception {
 		System.setProperty("webdriver.gecko.driver",
-				"firefox/geckodriver");
+				"/home/cd/satoprojects/satoexchange/geckodriver-v0.24.0-linux64");
 //
 //		FirefoxBinary firefoxBinary = new FirefoxBinary();
 //	    firefoxBinary.addCommandLineOptions("");
@@ -54,22 +54,13 @@ public class AppTest extends TestCase {
 		firefoxOptions.setBinary(fb);
 //		firefoxOptions.setBinary(firefoxBinary);
 
-		WebDriver driver = new FirefoxDriver(firefoxOptions);
+		WebDriver driver = new FirefoxDriver();
 		try {
-			driver.get("http://www.google.com");
-			WebElement element = driver.findElement(By.name("q"));
-			element.sendKeys("Cheese!\n"); // send also a "\n"
-			element.submit();
-
-			// wait until the google page shows the result
-			WebElement myDynamicElement = (new WebDriverWait(driver, 10))
-					.until(ExpectedConditions.presenceOfElementLocated(By.id("resultStats")));
-
-			List<WebElement> findElements = driver.findElements(By.xpath("//*[@id='rso']//h3"));
-
-			// this are all the links you like to visit
-			for (WebElement webElement : findElements) {
-				System.out.println(webElement.getText());
+			driver.get("https://tbtc.bitaps.com/");
+			WebElement button = driver.findElement(By.id("receive"));
+			for(;;) {
+				Thread.sleep(10000);
+				button.click();
 			}
 		} finally {
 			driver.close();

@@ -1,4 +1,4 @@
-package net.satopay.satoexchange.commands;
+package net.satopay.satoexchange.web.commands;
 
 import java.math.BigDecimal;
 
