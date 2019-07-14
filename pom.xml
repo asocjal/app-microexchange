@@ -38,6 +38,11 @@
 			<version>0.1</version>
 		</dependency>
 		<dependency>
+			<groupId>bittech</groupId>
+			<artifactId>lib-commands-ln</artifactId>
+			<version>0.1</version>
+		</dependency>
+		<dependency>
 			<groupId>satopay</groupId>
 			<artifactId>lib-satopay</artifactId>
 			<version>0.1</version>

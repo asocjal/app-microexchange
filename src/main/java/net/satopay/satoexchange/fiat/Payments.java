@@ -11,16 +11,20 @@ import bittech.lib.utils.Require;
 import bittech.lib.utils.exceptions.StoredException;
 import bittech.lib.utils.json.JsonBuilder;
 import net.satopay.satoexchange.PriceCalculator.Calculation;
+import net.satopay.satoexchange.ln.InvoicePaidEvent;
 import net.satopay.satoexchange.web.commands.GetPaymentStatusResponse;
 
-public class Payments {
+public class Payments implements InvoicePaidEvent {
 
+	private enum Status {WAIT_FOR_FIATS, DOING_LN_PAYMENT, DONE, EXPIRED};
+	
 	public static class Payment {
 		public String id;
 		public Calculation calculation;
 		public String lnInvocie;
 		public int timeoutSec;
 		public long expireTime;
+		public Status status;
 	}
 
 	private final Map<String, Payment> waitingPayments = new HashMap<String, Payment>();
@@ -56,26 +60,43 @@ public class Payments {
 			throw new StoredException("Cannot save calculations to file " + fileName, ex);
 		}
 	}
-
+	
+	private String invoiceToId(String invoice) {
+		int id = invoice.hashCode();
+		if(id < 0 ) {
+			id = -id;
+		}
+		return "" + id;
+	}
+	
 	public synchronized Payment newPayment(Calculation calculation, String lnInvoice) {
 		Payment p = new Payment();
-		p.id = "pay_" + (long) (Math.random() * Long.MAX_VALUE);
+		p.id = invoiceToId(lnInvoice);
+		if(waitingPayments.containsKey(p.id)) {
+			return waitingPayments.get(p.id);
+		}
+		if(donePayments.containsKey(p.id)) {
+			return donePayments.get(p.id);
+		}
 		p.calculation = Require.notNull(calculation, "calculation");
 		p.lnInvocie = Require.notEmpty(lnInvoice, "lnInvoice"); // TODO: Validate invoice and compare with calculation
 		p.timeoutSec = 10 * 60;
 		p.expireTime = (new Date()).getTime() + p.timeoutSec * 1000L;
+		p.status = Status.WAIT_FOR_FIATS;
 		waitingPayments.put(p.id, p);
 		save();
 		return p;
 	}
 
-	public synchronized void received(String id) {
-		Payment p = waitingPayments.remove(id);
+	public synchronized Payment received(String id) {
+		Payment p = waitingPayments.get(id);
 		if (p == null) {
 			throw new StoredException("No payment with id " + id, null);
 		}
-		donePayments.put(p.id, p);
+		p.status = Status.DOING_LN_PAYMENT;
+//		donePayments.put(p.id, p);
 		save();
+		return p;
 	}
 
 	public synchronized GetPaymentStatusResponse getStatus(String id) {
@@ -86,25 +107,43 @@ public class Payments {
 			long timeDelta = (payment.expireTime - new Date().getTime()) / 1000;
 
 			if (timeDelta <= 0) {
+				payment.status = Status.EXPIRED;
 				resp.status = "Expired :(";
 				resp.timeLeft = "Close this page and select exchange provider again";
 			} else {
-				resp.status = "Waiting for bank transfer...";
-				long min = timeDelta / 60;
-				long sec = timeDelta - min * 60;
-				resp.timeLeft = "" + min + " min. " + sec + " sec.";
+				if(payment.status == Status.WAIT_FOR_FIATS) {
+					resp.status = "Waiting for bank transfer...";
+					long min = timeDelta / 60;
+					long sec = timeDelta - min * 60;
+					resp.timeLeft = "" + min + " min. " + sec + " sec.";
+				} else if(payment.status == Status.DOING_LN_PAYMENT) {
+					resp.status = "Funds received on bank account. Sending satoshis...";
+					resp.timeLeft = "It should take few seconds.";
+				} else {
+					throw new StoredException("Unknown status: " + payment.status, null);
+				}
+
 			}
 			return resp;
 
 		} else if (donePayments.get(id) != null) {
 			resp.status = "Succeeded! Fiat funds received :)";
-			resp.timeLeft = "Nothing ore to do. You can close this page";
+			resp.timeLeft = "Nothing more to do. You can close this page";
 			return resp;
 		}
-		if (payment != null) {
 
-		}
 		throw new StoredException("No such payment id: " + id, null);
+	}
+
+	@Override
+	public synchronized void onPay(String invoice) {
+		String id = invoiceToId(invoice);
+		Payment p = waitingPayments.remove(id);
+		if(p != null) {
+			p.status = Status.DONE;
+			donePayments.put(p.id, p);
+			save();
+		}
 	}
 
 }
