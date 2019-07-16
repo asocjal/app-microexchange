@@ -1,6 +1,7 @@
 package net.satopay.satoexchange.web;
 
 import bittech.lib.protocol.ListenersManager;
+import lib.satopay.JsonCommandExec;
 
 public class ApiModule {
 	
