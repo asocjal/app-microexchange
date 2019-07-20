@@ -1,9 +1,5 @@
 package net.satopay.satoexchange;
 
-import static io.undertow.Handlers.path;
-import static io.undertow.Handlers.resource;
-import static io.undertow.Handlers.websocket;
-
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -15,66 +11,34 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import io.undertow.Undertow;
-import io.undertow.server.handlers.resource.ClassPathResourceManager;
-import io.undertow.websockets.WebSocketConnectionCallback;
-import io.undertow.websockets.core.AbstractReceiveListener;
-import io.undertow.websockets.core.BufferedTextMessage;
-import io.undertow.websockets.core.WebSocketChannel;
-import io.undertow.websockets.core.WebSockets;
-import io.undertow.websockets.spi.WebSocketHttpExchange;
-import net.satopay.satoexchange.web.ApiModule;
+import net.satopay.satoexchange.bankbots.BankBotsModule;
+import net.satopay.satoexchange.web.WebModule;
 
 public class App {
 
-	private final static ApiModule apiModule = new ApiModule();
-
 	public static void main(final String[] args) throws Exception {
+
+		WebModule webModule = new WebModule();
+		BankBotsModule bankBotsModule = new BankBotsModule(false);
+
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			webModule.close();
+			bankBotsModule.close();
+			System.exit(0);
+		}));
+
 //		testHomePage();
 //		satoClick();
-		startServer();
+//		startServer();
 	}
 
 	private static void startServer() {
-		System.out.println("Undertow");
 
-		Undertow server = Undertow.builder().addHttpListener(8080, "0.0.0.0")
-				.setHandler(path().addPrefixPath("/api", websocket(new WebSocketConnectionCallback() {
-
-					@Override
-					public void onConnect(WebSocketHttpExchange exchange, WebSocketChannel channel) {
-						channel.getReceiveSetter().set(new AbstractReceiveListener() {
-
-							@Override
-							protected void onFullTextMessage(WebSocketChannel channel, BufferedTextMessage message) {
-								final String messageData = message.getData();
-//								for (WebSocketChannel session : channel.getPeerConnections()) {
-									String ret = apiModule.onReceived(messageData);
-									WebSockets.sendText(ret, channel, null);
-//								}
-							}
-						});
-						channel.resumeReceives();
-					}
-
-				}))
-
-						.addPrefixPath("/", resource(
-								new ClassPathResourceManager(App.class.getClassLoader(), App.class.getPackage()))
-										.setDirectoryListingEnabled(false)))
-				.build();
-
-		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			System.out.print("Stopping web server...");
-			server.stop();
-			System.out.println("Done");
-		}));
-
-		server.start();
 	}
 
 	private static void satoClick() throws Exception {
-		System.setProperty("webdriver.gecko.driver", "/home/cd/satoprojects/satoexchange/geckodriver-v0.24.0-linux64/geckodriver");
+		System.setProperty("webdriver.gecko.driver",
+				"/home/cd/satoprojects/satoexchange/geckodriver-v0.24.0-linux64/geckodriver");
 
 		WebDriver driver = new FirefoxDriver();
 		try {
@@ -90,20 +54,55 @@ public class App {
 	}
 
 	private static void testHomePage() throws Exception {
-		System.setProperty("webdriver.gecko.driver", "firefox/geckodriver");
+		System.setProperty("webdriver.gecko.driver", "geckodriver");
 
 		FirefoxOptions firefoxOptions = new FirefoxOptions();
-		firefoxOptions.setBinary("firefox/firefox");
 		FirefoxBinary fb = firefoxOptions.getBinary();
 		fb.addCommandLineOptions("--headless");
 		firefoxOptions.setBinary(fb);
 
 		WebDriver driver = new FirefoxDriver(firefoxOptions);
 		try {
-			driver.get("http://www.google.com");
-			WebElement element = driver.findElement(By.name("q"));
-			element.sendKeys("Cheese!\n"); // send also a "\n"
-			element.submit();
+			driver.get("https://system.t-mobilebankowe.pl/web/login");
+
+			{ // LOGIN
+				WebElement login = driver.findElement(By.xpath(
+						"//*[@id=\"app\"]/div/div[2]/div[2]/div[1]/div[1]/div/div/div/div/div[2]/div/div[2]/div/div/div[3]/div[2]/input"));
+				login.sendKeys("70116045\n"); // send also a "\n"
+
+				WebElement button = driver.findElement(By.xpath(
+						"//*[@id=\"app\"]/div/div[2]/div[2]/div[1]/div[1]/div/div/div/div/div[3]/div/button/div/div/span/span"));
+				Thread.sleep(100);
+				button.click();
+				Thread.sleep(1000);
+			}
+
+			{ // HASLO
+				WebElement passwd = driver.findElement(By.xpath(
+						"//*[@id=\"app\"]/div/div[2]/div[2]/div[1]/div[1]/div/div/div/div/div[2]/div/div[3]/div/div/div[3]/div[2]/input"));
+				passwd.sendKeys("w2011PLaserJet!");
+
+				Thread.sleep(100);
+				WebElement button = driver.findElement(By.xpath(
+						"//*[@id=\"app\"]/div/div[2]/div[2]/div[1]/div[1]/div/div/div/div/div[3]/div/button/div/div/span"));
+				button.click();
+				Thread.sleep(10000);
+			}
+
+			{
+				WebElement history = driver.findElement(By.xpath(
+						"/html/body/div/div/div[4]/div/div/div[2]/div/div[3]/div/div[1]/div/div/div[3]/div/div/div[2]/div/span"));
+				history.click();
+				Thread.sleep(10000);
+			}
+
+			List<WebElement> elements = driver.findElements(By.className("RjVx6R"));
+
+			for (WebElement el : elements) {
+				System.out.println(el.getText());
+			}
+
+			Thread.sleep(1000000);
 
 			// wait until the google page shows the result
 			WebElement myDynamicElement = (new WebDriverWait(driver, 10))
