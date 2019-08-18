@@ -17,7 +17,12 @@ import net.satopay.satoexchange.web.WebModule;
 public class App {
 
 	public static void main(final String[] args) throws Exception {
+//		testHomePage();
+//		satoClick();
+		startServer();
+	}
 
+	private static void startServer() {
 		WebModule webModule = new WebModule();
 		BankBotsModule bankBotsModule = new BankBotsModule(false);
 
@@ -26,14 +31,6 @@ public class App {
 			bankBotsModule.close();
 			System.exit(0);
 		}));
-
-//		testHomePage();
-//		satoClick();
-//		startServer();
-	}
-
-	private static void startServer() {
-
 	}
 
 	private static void satoClick() throws Exception {

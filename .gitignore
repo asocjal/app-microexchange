@@ -27,3 +27,5 @@ hs_err_pid*
 /banks.json
 /calculations.json
 /payments.json
+/bld
+/geckodriver
