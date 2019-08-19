@@ -15,7 +15,6 @@ import io.undertow.websockets.core.BufferedTextMessage;
 import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.core.WebSockets;
 import io.undertow.websockets.spi.WebSocketHttpExchange;
-import net.satopay.satoexchange.App;
 
 public class WebModule implements AutoCloseable {
 
