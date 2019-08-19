@@ -1,4 +1,6 @@
-let socket = new WebSocket("ws://80.211.81.166:8080/api");
+var url = new URL(window.location.href);
+
+let socket = new WebSocket("wss://" + url.hostname + "/api");
 
 socket.onopen = function(e) {
   // alert("[open] Connection established, send -> server");
@@ -93,10 +95,6 @@ socket.onerror = function(error) {
 };
 
 function buildNewPaymentCommandRequest() {
-
-  var url_string = window.location.href; // "http://www.example.com/t.html?a=1&b=3&c=m2-m3-m4-m5"; //window.location.href
-  var url = new URL(url_string);
-
   var body = {};
   body.calculationId = url.searchParams.get("calculationId"); // "calc_4906277691219858432";
   body.lnInvoice = url.searchParams.get("lnInvoice");; // "lnbc1pwjrwvqpp5qjsc3rnnylvzrz2ze3nz8fz7v4ykyljx0xdqdkhc3yfjjgc5qm7sdqqcqzpgea7xw2y4fxp5azm64wcznaknaetzvvvswweyqhle2dr8gj0j4cn5sz5f27azztkrfj7wumgr9u5ssu4lc66hdcwphu7a9q6um8fc38sqrs2j3y";
