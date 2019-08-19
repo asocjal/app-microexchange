@@ -54,7 +54,7 @@ public class WebModule implements AutoCloseable {
 
 							}))
 
-							.addPrefixPath("/", resource(new ClassPathResourceManager(App.class.getClassLoader(),
+							.addPrefixPath("/", resource(new ClassPathResourceManager(WebModule.class.getClassLoader(),
 									WebModule.class.getPackage())).setDirectoryListingEnabled(false)))
 					.build();
 
