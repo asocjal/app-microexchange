@@ -35,11 +35,20 @@ public class App {
 
 	private static void satoClick() throws Exception {
 		System.setProperty("webdriver.gecko.driver",
-				"/home/cd/satoprojects/satoexchange/geckodriver-v0.24.0-linux64/geckodriver");
+				"geckodriver");
 
-		WebDriver driver = new FirefoxDriver();
+		FirefoxOptions firefoxOptions = new FirefoxOptions();
+		FirefoxBinary fb = firefoxOptions.getBinary();
+		fb.addCommandLineOptions("--headless");
+		firefoxOptions.setBinary(fb);
+
+		
+		WebDriver driver = new FirefoxDriver(firefoxOptions);
 		try {
 			driver.get("https://tbtc.bitaps.com/");
+			WebElement input = driver.findElement(By.id("faucet-address"));
+			input.sendKeys("2NBMEXnU3untFp1gJd4xLvvUhUdr5gv1qfp");
+			
 			WebElement button = driver.findElement(By.id("receive"));
 			for (;;) {
 				Thread.sleep(10000);
