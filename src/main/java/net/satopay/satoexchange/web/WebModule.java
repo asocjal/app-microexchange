@@ -6,6 +6,7 @@ import static io.undertow.Handlers.websocket;
 
 import javax.net.ssl.SSLContext;
 
+import bittech.lib.utils.Require;
 import bittech.lib.utils.exceptions.StoredException;
 import io.undertow.Undertow;
 import io.undertow.server.handlers.resource.ClassPathResourceManager;
@@ -15,17 +16,21 @@ import io.undertow.websockets.core.BufferedTextMessage;
 import io.undertow.websockets.core.WebSocketChannel;
 import io.undertow.websockets.core.WebSockets;
 import io.undertow.websockets.spi.WebSocketHttpExchange;
+import net.satopay.satoexchange.core.CoreModule;
 
 public class WebModule implements AutoCloseable {
 
-	private final static ApiModule apiModule = new ApiModule();
+	
+	private final ApiModule apiModule;
 	private static Undertow server;
 
-	public WebModule() {
+	public WebModule(CoreModule coreModule) {
 
 		try {
 			System.out.println("Starting microex Web Module");
 
+			this.apiModule = new ApiModule(Require.notNull(coreModule, "coreModule"));
+			
 			SSLContext sslContext = KeystoreLoader.createSSLContext(
 					KeystoreLoader.loadKeyStore("/web-inf/microex.keystore", "ElaMaKaca"), "ElaMaKaca");
 
