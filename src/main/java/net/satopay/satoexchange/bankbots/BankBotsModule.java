@@ -13,16 +13,18 @@ import bittech.lib.utils.Notificator;
 
 public class BankBotsModule implements AutoCloseable, BankTxReceivedEvent {
 	
-	WebDriver driver;
-	List<Bank> banks;
+	private WebDriver driver;
+	private List<Bank> banks;
 	
-	Notificator<BankTxReceivedEvent> notificator = new Notificator<BankTxReceivedEvent>();
+	private BanksData baksData = BanksData.readFromConfig();
+	
+	private Notificator<BankTxReceivedEvent> notificator = new Notificator<BankTxReceivedEvent>();
 	
 	public BankBotsModule(boolean visible) {
 		initWebDriver(visible);
 		
 		banks = new LinkedList<Bank>();
-		banks.add(new Tmobile(driver) {
+		banks.add(new Tmobile(driver, baksData.get("tmobile")) {
 
 			@Override
 			public void onReceived(String title, BigDecimal amount) {

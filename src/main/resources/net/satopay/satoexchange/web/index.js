@@ -115,6 +115,7 @@ function buildCommand(name, body) {
     cmd.type = "request";
     cmd.timeout = 10000;
     cmd.body = body;
+    // alert(JSON.stringify(cmd));
     return JSON.stringify(cmd);
 }
 

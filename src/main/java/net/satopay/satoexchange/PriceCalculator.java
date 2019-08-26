@@ -67,12 +67,12 @@ public class PriceCalculator {
 		return calc;
 	}
 
-	public synchronized void remove(String id) {
-		if (caluclatons.remove(id) == null) {
-			throw new StoredException("No such price calculation: " + id, null);
-		}
-		save();
-	}
+//	public synchronized void remove(String id) {
+//		if (caluclatons.remove(id) == null) {
+//			throw new StoredException("No such price calculation: " + id, null);
+//		}
+//		save();
+//	}
 
 	public synchronized Calculation get(String id) {
 		Calculation calc = caluclatons.get(id);

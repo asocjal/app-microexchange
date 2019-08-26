@@ -12,21 +12,25 @@ import org.openqa.selenium.WebElement;
 
 import bittech.lib.utils.Require;
 import bittech.lib.utils.exceptions.StoredException;
+import net.satopay.satoexchange.bankbots.BanksData.BankData;
 
 public abstract class Tmobile implements Bank {
 
 	final WebDriver driver;
 
 	private ExecutorService executor = Executors.newSingleThreadExecutor();
+	
+	private BankData bankData;
 
-	private String userId = "secret";
-	private String passwd = "secret";
-	private String accountNumber = "secret";
+//	private String userId = "secret";
+//	private String passwd = "secret";
+//	private String accountNumber = "secret";
 
 	private String lastTxId = "";
 
-	public Tmobile(final WebDriver driver) {
+	public Tmobile(final WebDriver driver, final BankData bankData) {
 		this.driver = Require.notNull(driver, "driver");
+		this.bankData = Require.notNull(bankData, "bankData");
 	}
 
 	public void login() {
@@ -37,7 +41,7 @@ public abstract class Tmobile implements Bank {
 			{ // LOGIN
 				WebElement login = driver.findElement(By.xpath(
 						"//*[@id=\"app\"]/div/div[2]/div[2]/div[1]/div[1]/div/div/div/div/div[2]/div/div[2]/div/div/div[3]/div[2]/input"));
-				login.sendKeys(userId); // send also a "\n"
+				login.sendKeys(bankData.login); // send also a "\n"
 
 				WebElement button = driver.findElement(By.xpath(
 						"//*[@id=\"app\"]/div/div[2]/div[2]/div[1]/div[1]/div/div/div/div/div[3]/div/button/div/div/span/span"));
@@ -49,7 +53,7 @@ public abstract class Tmobile implements Bank {
 			{ // HASLO
 				WebElement elPasswd = driver.findElement(By.xpath(
 						"//*[@id=\"app\"]/div/div[2]/div[2]/div[1]/div[1]/div/div/div/div/div[2]/div/div[3]/div/div/div[3]/div[2]/input"));
-				elPasswd.sendKeys(passwd);
+				elPasswd.sendKeys(bankData.password);
 
 				Thread.sleep(100);
 				WebElement button = driver.findElement(By.xpath(
@@ -59,7 +63,7 @@ public abstract class Tmobile implements Bank {
 			}
 
 			{
-				WebElement details = driver.findElement(By.id(accountNumber));
+				WebElement details = driver.findElement(By.id(bankData.accountNum));
 				details.click();
 				Thread.sleep(10000);
 
@@ -104,6 +108,7 @@ public abstract class Tmobile implements Bank {
 						String amountStr = el.findElement(By.className("RjVx3M")).getText();
 						amountStr = amountStr.replace(',', '.');
 						amountStr = amountStr.replace(" PLN", "");
+						amountStr = amountStr.replace(" ", "");
 						BigDecimal amount;
 						try {
 							amount = new BigDecimal(amountStr);

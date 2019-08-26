@@ -47,7 +47,7 @@ public class TMobileTests extends TestCase {
 
 	public void testBasic() throws Exception {
 
-		try(BankBotsModule banks = new BankBotsModule(true)) {
+		try(BankBotsModule banks = new BankBotsModule(false)) {
 			banks.registerBankTxReceivedListener(new BankTxReceivedEvent() {
 
 				@Override

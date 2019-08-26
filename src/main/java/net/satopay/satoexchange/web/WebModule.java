@@ -57,7 +57,7 @@ public class WebModule implements AutoCloseable {
 									WebModule.class.getPackage())).setDirectoryListingEnabled(false)))
 					.build();
 
-			server.start();
+			new Thread(() -> { server.start(); }).start();
 
 		} catch (Exception ex) {
 			throw new StoredException("Cannot create Web module", ex);
@@ -70,7 +70,10 @@ public class WebModule implements AutoCloseable {
 		if (server != null) {
 			server.stop();
 		}
-		System.out.println("Done");
+		
+		apiModule.close();
+		
+		System.out.println("Web module stopped");
 	}
 
 }

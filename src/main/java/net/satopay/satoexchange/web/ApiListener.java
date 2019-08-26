@@ -20,7 +20,7 @@ import net.satopay.satoexchange.web.commands.GetPaymentStatusCommand;
 import net.satopay.satoexchange.web.commands.NewPaymentCommand;
 import net.satopay.satoexchange.web.commands.NewPaymentResponse;
 
-public class ApiListener implements Listener {
+public class ApiListener implements Listener, AutoCloseable {
 
 	private final PriceCalculator priceCalculator = PriceCalculator.load();
 	private final Payments payments = Payments.load();
@@ -80,6 +80,11 @@ public class ApiListener implements Listener {
 	public void responseSent(String serviceName, Command<?, ?> command) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void close() {
+		ln.close();
 	}
 
 }
