@@ -7,10 +7,11 @@ import bittech.lib.utils.exceptions.StoredException;
 
 public class BanksData {
 	
-	public static class BankData {
+	public static class BankData {		
 		public String login;
 		public String password;
 		public String accountNum;
+		public String payee;
 	}
 	
 	private Map<String, BankData> banks;
@@ -31,6 +32,11 @@ public class BanksData {
 		} catch(Exception ex) {
 			throw new StoredException("Cannot get bank data for name " + name, ex);
 		}
+	}
+	
+	public String getAccountNum(String id) {
+		BankData bd = get(id);
+		return bd.accountNum;
 	}
 
 }

@@ -3,6 +3,7 @@ package net.satopay.satoexchange.fiat;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -88,17 +89,21 @@ public class Payments implements InvoicePaidEvent {
 		return p;
 	}
 
-	public synchronized Payment received(String id) {
+	public synchronized Payment received(String id, BigDecimal amount) {
 		Payment p = waitingPayments.get(id);
 		if (p == null) {
 			throw new StoredException("No payment with id " + id, null);
 		}
 		p.status = Status.DOING_LN_PAYMENT;
 //		donePayments.put(p.id, p);
-		save();
+		save(); // TODO: Check amount
 		return p;
 	}
 
+	public synchronized boolean hasPayment(String id) {
+		return waitingPayments.get(id) != null;
+	}
+	
 	public synchronized GetPaymentStatusResponse getStatus(String id) {
 		GetPaymentStatusResponse resp = new GetPaymentStatusResponse();
 		Payment payment = null;

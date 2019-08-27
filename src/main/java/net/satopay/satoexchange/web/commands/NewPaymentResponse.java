@@ -10,6 +10,8 @@ public class NewPaymentResponse implements Response {
 	public Bank bank;
 	public BigDecimal amount;
 	public String title;
+	public String accountNumber;
+	public String payee;
 	public int timeoutSec;
 	
 	public NewPaymentResponse() {

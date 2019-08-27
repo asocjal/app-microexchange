@@ -10,8 +10,9 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
 import bittech.lib.utils.Notificator;
+import net.satopay.satoexchange.bankbots.BanksData.BankData;
 
-public class BankBotsModule implements AutoCloseable, BankTxReceivedEvent {
+public class BankBotsModule implements AutoCloseable {
 	
 	private WebDriver driver;
 	private List<Bank> banks;
@@ -35,6 +36,10 @@ public class BankBotsModule implements AutoCloseable, BankTxReceivedEvent {
 		
 		loginToBanks();
 //		startWathingThread();
+	}
+	
+	public BankData getBank(String id) {
+		return baksData.get(id);
 	}
 	
 	public void registerBankTxReceivedListener(BankTxReceivedEvent listener) {
@@ -76,12 +81,6 @@ public class BankBotsModule implements AutoCloseable, BankTxReceivedEvent {
 			driver.quit();
 		}
 		System.out.println("Done");
-	}
-
-	@Override
-	public void onBankTxReceived(String title, BigDecimal amount) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

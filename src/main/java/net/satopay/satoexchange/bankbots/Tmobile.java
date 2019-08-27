@@ -63,7 +63,8 @@ public abstract class Tmobile implements Bank {
 			}
 
 			{
-				WebElement details = driver.findElement(By.id(bankData.accountNum));
+				String accountNum = bankData.accountNum.replace(" ", "");
+				WebElement details = driver.findElement(By.id(accountNum));
 				details.click();
 				Thread.sleep(10000);
 

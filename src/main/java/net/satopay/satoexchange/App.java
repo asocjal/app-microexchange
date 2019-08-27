@@ -22,10 +22,8 @@ public class App {
 		try {
 			CoreModule coreModule = new CoreModule();
 			WebModule webModule = new WebModule(coreModule);
-			BankBotsModule bankBotsModule = new BankBotsModule(false);
 
 			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-				bankBotsModule.close();
 				webModule.close();
 				coreModule.close();
 

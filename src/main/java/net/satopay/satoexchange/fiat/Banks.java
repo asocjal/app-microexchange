@@ -2,7 +2,6 @@ package net.satopay.satoexchange.fiat;
 
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +14,6 @@ public class Banks {
 		public String id;
 		public boolean active;
 		public String fullName;
-		public String accountNumber;
 		public String iconUrl;
 		public String pageUrl;
 	}
@@ -42,15 +40,15 @@ public class Banks {
 		}
 	}
 
-	private synchronized void save() {
-		try {
-			try (FileWriter fw = new FileWriter(new File(fileName))) {
-				JsonBuilder.build().toJson(this, fw);
-			}
-		} catch (Exception ex) {
-			throw new StoredException("Cannot save calculations to file " + fileName, ex);
-		}
-	}
+//	private synchronized void save() {
+//		try {
+//			try (FileWriter fw = new FileWriter(new File(fileName))) {
+//				JsonBuilder.build().toJson(this, fw);
+//			}
+//		} catch (Exception ex) {
+//			throw new StoredException("Cannot save calculations to file " + fileName, ex);
+//		}
+//	}
 
 	public synchronized Bank getBank(String id) {
 		Bank b = banks.get(id);
@@ -60,48 +58,48 @@ public class Banks {
 		return b;
 	}
 
-	public synchronized void createBanks() {
-		{
-			Bank b = new Bank();
-			b.id = "tmobile"; // , , 
-			b.active = true;
-			b.fullName = "T-Mobile usługi bankowe";
-			b.iconUrl = "bank_icons/tmobile.png";
-			b.pageUrl = "https://www.t-mobilebankowe.pl/";
-			b.accountNumber = "01 78732 0987 0001 76876 2142";
-			banks.put(b.id, b);
-		}
-		{
-			Bank b = new Bank();
-			b.id = "bos";
-			b.active = true;
-			b.fullName = "BOŚ bank";
-			b.iconUrl = "bank_icons/bos.png";
-			b.pageUrl = "https://www.bosbank.pl/";
-			b.accountNumber = "02 78732 0987 0001 76876 2142";
-			banks.put(b.id, b);
-		}
-		{
-			Bank b = new Bank();
-			b.id = "mbank";
-			b.active = true;
-			b.fullName = "mBank";
-			b.iconUrl = "bank_icons/mbank.gif";
-			b.pageUrl = "https://www.mbank.pl/indywidualny/";
-			b.accountNumber = "03 78732 0987 0001 76876 2142";
-			banks.put(b.id, b);
-		}
-		{
-			Bank b = new Bank();
-			b.id = "millenium"; // bos, mbank, millenium
-			b.active = true;
-			b.fullName = "Millenium bank";
-			b.iconUrl = "bank_icons/millenium.png";
-			b.pageUrl = "https://www.bankmillennium.pl/";
-			b.accountNumber = "04 78732 0987 0001 76876 2142";
-			banks.put(b.id, b);
-		}
-		save();
-	}
+//	public synchronized void createBanks() {
+//		{
+//			Bank b = new Bank();
+//			b.id = "tmobile"; // , , 
+//			b.active = true;
+//			b.fullName = "T-Mobile usługi bankowe";
+//			b.iconUrl = "bank_icons/tmobile.png";
+//			b.pageUrl = "https://www.t-mobilebankowe.pl/";
+//			b.accountNumber = "01 78732 0987 0001 76876 2142";
+//			banks.put(b.id, b);
+//		}
+//		{
+//			Bank b = new Bank();
+//			b.id = "bos";
+//			b.active = true;
+//			b.fullName = "BOŚ bank";
+//			b.iconUrl = "bank_icons/bos.png";
+//			b.pageUrl = "https://www.bosbank.pl/";
+//			b.accountNumber = "02 78732 0987 0001 76876 2142";
+//			banks.put(b.id, b);
+//		}
+//		{
+//			Bank b = new Bank();
+//			b.id = "mbank";
+//			b.active = true;
+//			b.fullName = "mBank";
+//			b.iconUrl = "bank_icons/mbank.gif";
+//			b.pageUrl = "https://www.mbank.pl/indywidualny/";
+//			b.accountNumber = "03 78732 0987 0001 76876 2142";
+//			banks.put(b.id, b);
+//		}
+//		{
+//			Bank b = new Bank();
+//			b.id = "millenium"; // bos, mbank, millenium
+//			b.active = true;
+//			b.fullName = "Millenium bank";
+//			b.iconUrl = "bank_icons/millenium.png";
+//			b.pageUrl = "https://www.bankmillennium.pl/";
+//			b.accountNumber = "04 78732 0987 0001 76876 2142";
+//			banks.put(b.id, b);
+//		}
+//		save();
+//	}
 
 }
