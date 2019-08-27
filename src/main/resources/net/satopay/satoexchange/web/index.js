@@ -52,10 +52,11 @@ function injectGetInfoCommandData(data) {
 function injectNewPaymentCommandData(data) {
   document.getElementById("amount1").textContent = data.body.amount.toFixed(2) + " zł";
   document.getElementById("amount2").textContent = data.body.amount.toFixed(2) + " zł";
-  document.getElementById("bankNumber").textContent = data.body.bank.accountNumber;
+  document.getElementById("bankNumber").textContent = data.body.accountNumber;
   document.getElementById("bankUrl").href = data.body.bank.pageUrl;
   document.getElementById("bankLogo").href = data.body.bank.iconUrl;
   document.getElementById("title").textContent = data.body.title;
+  document.getElementById("payee").textContent = data.body.payee;
   
   document.getElementById("ok").hidden = false;
 
