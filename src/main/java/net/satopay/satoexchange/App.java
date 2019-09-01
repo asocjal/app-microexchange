@@ -1,5 +1,7 @@
 package net.satopay.satoexchange;
 
+import java.io.File;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -7,13 +9,14 @@ import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
-import net.satopay.satoexchange.bankbots.BankBotsModule;
+import bittech.lib.utils.Config;
 import net.satopay.satoexchange.core.CoreModule;
 import net.satopay.satoexchange.web.WebModule;
 
 public class App {
 
 	public static void main(final String[] args) throws Exception {
+		Config.loadFromFile(new File(".satoex/config.json"));
 //		satoClick();
 		startServer();
 	}

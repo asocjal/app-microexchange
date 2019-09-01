@@ -31,7 +31,7 @@ public class Payments implements InvoicePaidEvent {
 	private final Map<String, Payment> waitingPayments = new HashMap<String, Payment>();
 	private final Map<String, Payment> donePayments = new HashMap<String, Payment>();
 //	private final Map<String, Payment> canceledPayments = new HashMap<String, Payment>();
-	private static final String fileName = "payments.json";
+	private static final String fileName = ".satoex/payments.json";
 
 	private Payments() {
 		// TODO Auto-generated constructor stub

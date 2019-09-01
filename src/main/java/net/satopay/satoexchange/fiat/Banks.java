@@ -3,7 +3,10 @@ package net.satopay.satoexchange.fiat;
 import java.io.File;
 import java.io.FileReader;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import bittech.lib.utils.exceptions.StoredException;
 import bittech.lib.utils.json.JsonBuilder;
@@ -40,6 +43,16 @@ public class Banks {
 		}
 	}
 
+	public synchronized List<String> getActiveBanks() {
+		List<String> activeBanks = new LinkedList<String>();
+		for(Entry<String, Bank> entry : banks.entrySet()) {
+			if(entry.getValue().active) {
+				activeBanks.add(entry.getKey());
+			}
+		}
+		return activeBanks;
+	}
+	
 //	private synchronized void save() {
 //		try {
 //			try (FileWriter fw = new FileWriter(new File(fileName))) {

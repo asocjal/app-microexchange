@@ -25,7 +25,7 @@ public class PriceCalculator {
 
 	public static final BigDecimal btcPriceZl = new BigDecimal(41000);
 	public static final BigDecimal satPriceZl = btcPriceZl.divide(new BigDecimal("100000000"));
-	private static final String fileName = "calculations.json";
+	private static final String fileName = ".satoex/calculations.json";
 
 	private PriceCalculator() {
 		// TODO Auto-generated constructor stub
