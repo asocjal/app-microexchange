@@ -46,8 +46,8 @@ public class ApiListener implements Listener, AutoCloseable {
 			cmd.response = new GetInfoResponse("SUPERSAT 23", "mailtoadmin@gmail.com");
 		} else if (command instanceof CalcFiatPriceCommand) {
 			CalcFiatPriceCommand cmd = (CalcFiatPriceCommand) command;
-			Calculation calc = coreModule.priceCalculator.calculate(cmd.getRequest().bankId, cmd.getRequest().satoshis);
-			cmd.response = new CalcFiatPriceResponse(calc.price, calc.id);
+			Calculation calc = coreModule.priceCalculator.calculate(cmd.getRequest().calculationId, cmd.getRequest().satoshis);
+			cmd.response = new CalcFiatPriceResponse(calc.prices);
 		} else if (command instanceof FiatsReceivedCommand) {
 			FiatsReceivedCommand cmd = (FiatsReceivedCommand) command;
 			Payment p = coreModule.payments.received(cmd.getRequest().title, new BigDecimal("0"));
@@ -59,12 +59,12 @@ public class ApiListener implements Listener, AutoCloseable {
 			coreModule.ln.verifyInvoice(cmd.getRequest().lnInvoice, calc.satoshis);
 			Payment payment = coreModule.payments.newPayment(calc, Require.notNull(cmd.getRequest().lnInvoice, "lnInvoice"));
 			cmd.response = new NewPaymentResponse();
-			cmd.response.amount = payment.calculation.price;
-			cmd.response.bank = coreModule.banks.getBank(payment.calculation.bankId);
+			cmd.response.amount = payment.calculation.prices.get(cmd.getRequest().bankId);
+			cmd.response.bank = coreModule.banks.getBank(cmd.getRequest().bankId);
 			cmd.response.timeoutSec = payment.timeoutSec;
 			cmd.response.title = payment.id;
-			cmd.response.accountNumber = coreModule.bankBotsModule.getBank(payment.calculation.bankId).accountNum;
-			cmd.response.payee = coreModule.bankBotsModule.getBank(payment.calculation.bankId).payee;
+			cmd.response.accountNumber = coreModule.bankBotsModule.getBank(cmd.getRequest().bankId).accountNum;
+			cmd.response.payee = coreModule.bankBotsModule.getBank(cmd.getRequest().bankId).payee;
 		} else if (command instanceof GetPaymentStatusCommand) {
 			GetPaymentStatusCommand cmd = (GetPaymentStatusCommand) command;
 			cmd.response = coreModule.payments.getStatus(cmd.getRequest().title);

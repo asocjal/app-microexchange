@@ -17,9 +17,9 @@ public class CoreModule implements AutoCloseable, BankTxReceivedEvent {
 
 	public final SatoexConfig satoexConfig;
 	public final BankBotsModule bankBotsModule;
+	public final Banks banks;
 	public final PriceCalculator priceCalculator;
 	public final Payments payments;
-	public final Banks banks;
 	public final Ln ln;
 	public final HubModule hubModule;
 
@@ -27,9 +27,9 @@ public class CoreModule implements AutoCloseable, BankTxReceivedEvent {
 		try {
 			satoexConfig = Config.getInstance().getEntry("satoex", SatoexConfig.class);
 			bankBotsModule = new BankBotsModule(false);
-			priceCalculator = PriceCalculator.load();
-			payments = Payments.load();
 			banks = Banks.load();
+			priceCalculator = new PriceCalculator(banks);
+			payments = Payments.load();
 			ln = new Ln();
 			hubModule = new HubModule(satoexConfig.name, satoexConfig.domain, banks.getActiveBanks());
 
