@@ -97,14 +97,11 @@ socket.onerror = function(error) {
 
 function buildNewPaymentCommandRequest() {
   var body = {};
-  body.calculationId = url.searchParams.get("calculationId"); // "calc_4906277691219858432";
-  body.lnInvoice = url.searchParams.get("lnInvoice");; // "lnbc1pwjrwvqpp5qjsc3rnnylvzrz2ze3nz8fz7v4ykyljx0xdqdkhc3yfjjgc5qm7sdqqcqzpgea7xw2y4fxp5azm64wcznaknaetzvvvswweyqhle2dr8gj0j4cn5sz5f27azztkrfj7wumgr9u5ssu4lc66hdcwphu7a9q6um8fc38sqrs2j3y";
-  
+  body.calculationId = url.searchParams.get("calculationId");
+  body.bankId = url.searchParams.get("bankId");
+  body.lnInvoice = url.searchParams.get("lnInvoice");
+
   document.getElementById("lnInvoice").innerHTML = body.lnInvoice;
-  
-  // if(body.calculationId == null) {
-  //   injectErrorString("No calculationId parameter in URL");
-  // }
   
   return body;
 }
