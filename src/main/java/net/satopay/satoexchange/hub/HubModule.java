@@ -16,7 +16,7 @@ public class HubModule implements AutoCloseable {
 	private final Node node;
 	private final Connection connection;
 
-	public HubModule(final String name, final List<String> banksSupported) {
+	public HubModule(final String name, final String domain, final List<String> banksSupported) {
 		try {
 			satopayConnection = Config.getInstance().getEntry("satopay", SatopayConnection.class);
 			node = new Node("Microex" + (long) (Math.random() * Long.MAX_VALUE));
@@ -26,6 +26,7 @@ public class HubModule implements AutoCloseable {
 			Exchange exchange = new Exchange();
 			exchange.active = satopayConnection.active;
 			exchange.name = Require.notEmpty(name, "exchange name");
+			exchange.domain = Require.notEmpty(domain, "exchange domain");
 			exchange.banksSupported = Require.notNull(banksSupported, "banksSupported");
 			RegisterExchangeCommand cmd = new RegisterExchangeCommand(exchange);
 			connection.execute(cmd);
