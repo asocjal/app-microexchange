@@ -87,6 +87,7 @@ public class PriceCalculator {
 			calc.prices.put(bankId, price);
 		}
 
+		System.out.println(" -------- Adding calculation: " + JsonBuilder.build().toJson(calc));
 		data.caluclatons.put(calc.id, calc);
 		data.save();
 		return Utils.deepCopy(calc, Calculation.class);
@@ -100,6 +101,7 @@ public class PriceCalculator {
 //	}
 
 	public synchronized Calculation get(String id) {
+		System.out.println(" -------- Looking fo calculation with id: " + id);
 		Calculation calc = data.caluclatons.get(id);
 		if (calc == null) {
 			throw new StoredException("No such price calculation: " + id, null);

@@ -31,7 +31,7 @@ public class CoreModule implements AutoCloseable, BankTxReceivedEvent {
 			priceCalculator = new PriceCalculator(banks);
 			payments = Payments.load();
 			ln = new Ln();
-			hubModule = new HubModule(satoexConfig.name, satoexConfig.domain, banks.getActiveBanks());
+			hubModule = new HubModule(this);
 
 			ln.registerInvoicePaidListener(payments);
 			bankBotsModule.registerBankTxReceivedListener(this);

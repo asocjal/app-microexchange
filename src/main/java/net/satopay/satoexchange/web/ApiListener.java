@@ -7,6 +7,7 @@ import bittech.lib.protocol.Listener;
 import bittech.lib.protocol.common.NoDataResponse;
 import bittech.lib.utils.Require;
 import bittech.lib.utils.exceptions.StoredException;
+import bittech.lib.utils.json.JsonBuilder;
 import lib.satopay.CalcFiatPriceCommand;
 import lib.satopay.CalcFiatPriceResponse;
 import net.satopay.satoexchange.PriceCalculator.Calculation;
@@ -46,8 +47,9 @@ public class ApiListener implements Listener, AutoCloseable {
 			cmd.response = new GetInfoResponse("SUPERSAT 23", "mailtoadmin@gmail.com");
 		} else if (command instanceof CalcFiatPriceCommand) {
 			CalcFiatPriceCommand cmd = (CalcFiatPriceCommand) command;
-			Calculation calc = coreModule.priceCalculator.calculate(cmd.getRequest().calculationId, cmd.getRequest().satoshis);
+			Calculation calc = coreModule.priceCalculator.calculate(cmd.getRequest().calculationId, cmd.getRequest().amount.toSatRoundFloor());
 			cmd.response = new CalcFiatPriceResponse(calc.prices);
+			System.out.println("------------- CALC fat price: " + JsonBuilder.build().toJson(cmd));
 		} else if (command instanceof FiatsReceivedCommand) {
 			FiatsReceivedCommand cmd = (FiatsReceivedCommand) command;
 			Payment p = coreModule.payments.received(cmd.getRequest().title, new BigDecimal("0"));
