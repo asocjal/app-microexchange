@@ -1,4 +1,4 @@
-package net.satopay.satoexchange.bankbots;
+package net.satopay.satoexchange.banks.bots;
 
 import java.math.BigDecimal;
 import java.util.LinkedList;
@@ -12,7 +12,7 @@ import org.openqa.selenium.WebElement;
 
 import bittech.lib.utils.Require;
 import bittech.lib.utils.exceptions.StoredException;
-import net.satopay.satoexchange.bankbots.BanksData.BankData;
+import net.satopay.satoexchange.banks.bots.BanksData.BankData;
 
 public abstract class Tmobile implements Bank {
 

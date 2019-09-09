@@ -34,7 +34,7 @@ public class ApiListener implements Listener, AutoCloseable {
 		if (command instanceof CalcFiatPriceCommand) {
 			CalcFiatPriceCommand cmd = (CalcFiatPriceCommand) command;
 			System.out.println(" -------- Command received: " + JsonBuilder.build().toJson(cmd));
-			Calculation calc = coreModule.priceCalculator.calculate(cmd.getRequest().calculationId, cmd.getRequest().amount.toSatRoundFloor());
+			Calculation calc = coreModule.calculatePrice(cmd.getRequest().calculationId, cmd.getRequest().amount.toSatRoundFloor());
 			cmd.response = new CalcFiatPriceResponse(calc.prices);
 			System.out.println("------------- CALC fat price: " + JsonBuilder.build().toJson(cmd));
 		} else {

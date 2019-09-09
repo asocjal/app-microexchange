@@ -1,19 +1,12 @@
 package net.satopay.seatoexhcnage.banks;
 
-import java.util.List;
-
-import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
-import bittech.lib.utils.Utils;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

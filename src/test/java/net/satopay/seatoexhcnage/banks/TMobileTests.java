@@ -1,25 +1,12 @@
 package net.satopay.seatoexhcnage.banks;
 
 import java.math.BigDecimal;
-import java.util.List;
 
-import org.junit.Assert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxBinary;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import bittech.lib.utils.Utils;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import net.satopay.satoexchange.bankbots.BankBotsModule;
-import net.satopay.satoexchange.bankbots.BankTxReceivedEvent;
+import net.satopay.satoexchange.banks.bots.BankBotsModule;
+import net.satopay.satoexchange.banks.bots.BankTxReceivedEvent;
 
 /**
  * Unit test for simple App.

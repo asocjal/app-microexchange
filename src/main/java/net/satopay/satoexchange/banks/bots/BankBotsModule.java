@@ -1,4 +1,4 @@
-package net.satopay.satoexchange.bankbots;
+package net.satopay.satoexchange.banks.bots;
 
 import java.math.BigDecimal;
 import java.util.LinkedList;
@@ -10,7 +10,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
 import bittech.lib.utils.Notificator;
-import net.satopay.satoexchange.bankbots.BanksData.BankData;
+import net.satopay.satoexchange.banks.bots.BanksData.BankData;
 
 public class BankBotsModule implements AutoCloseable {
 	

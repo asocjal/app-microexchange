@@ -3,7 +3,7 @@ package net.satopay.satoexchange.web.commands;
 import java.math.BigDecimal;
 
 import bittech.lib.protocol.Response;
-import net.satopay.satoexchange.fiat.Banks.Bank;
+import net.satopay.satoexchange.banks.Banks.Bank;
 
 public class NewPaymentResponse implements Response {
 

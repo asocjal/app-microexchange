@@ -1,4 +1,4 @@
-package net.satopay.satoexchange.bankbots;
+package net.satopay.satoexchange.banks.bots;
 
 import java.math.BigDecimal;
 import java.util.List;

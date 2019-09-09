@@ -10,7 +10,10 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
 import bittech.lib.utils.Config;
+import net.satopay.satoexchange.banks.BanksModule;
 import net.satopay.satoexchange.core.CoreModule;
+import net.satopay.satoexchange.hub.HubModule;
+import net.satopay.satoexchange.ln.LnModule;
 import net.satopay.satoexchange.web.WebModule;
 
 public class App {
@@ -23,12 +26,19 @@ public class App {
 
 	private static void startServer() {
 		try {
-			CoreModule coreModule = new CoreModule();
-			WebModule webModule = new WebModule(coreModule);
+
+			BanksModule banksModule = new BanksModule();
+			LnModule lnModule = new LnModule();
+			CoreModule coreModule = new CoreModule(banksModule, lnModule);
+			HubModule hubModule = new HubModule(coreModule, banksModule);
+			WebModule webModule = new WebModule(coreModule, lnModule, banksModule);
 
 			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 				webModule.close();
+				hubModule.close();
 				coreModule.close();
+				lnModule.close();
+				banksModule.close();
 
 				Runtime.getRuntime().halt(0); // TODO: Needed because webModule do not want to stop properly
 			}));

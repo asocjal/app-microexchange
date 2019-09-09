@@ -1,8 +1,5 @@
 package net.satopay.satoexchange;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.HashMap;
@@ -13,7 +10,7 @@ import bittech.lib.utils.Require;
 import bittech.lib.utils.Utils;
 import bittech.lib.utils.exceptions.StoredException;
 import bittech.lib.utils.json.JsonBuilder;
-import net.satopay.satoexchange.fiat.Banks;
+import net.satopay.satoexchange.banks.BanksModule;
 
 public class PriceCalculator {
 
@@ -42,11 +39,11 @@ public class PriceCalculator {
 	public static final BigDecimal satPriceZl = btcPriceZl.divide(new BigDecimal("100000000"));
 	private static final String fileName = ".satoex/calculations.json";
 	
-	private final Banks banks;
+	private final BanksModule banksModule;
 	
-	public PriceCalculator(final Banks banks) {
+	public PriceCalculator(final BanksModule banksModule) {
 		this.data = Data.load(fileName, Data.class);
-		this.banks = Require.notNull(banks, "banks");
+		this.banksModule = Require.notNull(banksModule, "banksModule");
 	}
 	
 //	public static PriceCalculator load() {
@@ -83,7 +80,7 @@ public class PriceCalculator {
 		BigDecimal price = satPriceZl.multiply(new BigDecimal(satoshis), new MathContext(2));
 		
 		calc.prices = new HashMap<String, BigDecimal>();
-		for(String bankId : banks.getActiveBanks()) {
+		for(String bankId : banksModule.getActiveBanks()) {
 			calc.prices.put(bankId, price);
 		}
 

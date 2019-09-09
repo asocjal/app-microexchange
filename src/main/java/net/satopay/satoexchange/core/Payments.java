@@ -1,4 +1,4 @@
-package net.satopay.satoexchange.fiat;
+package net.satopay.satoexchange.core;
 
 import java.io.File;
 import java.io.FileReader;

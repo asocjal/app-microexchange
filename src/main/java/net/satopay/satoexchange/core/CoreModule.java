@@ -2,57 +2,70 @@ package net.satopay.satoexchange.core;
 
 import java.math.BigDecimal;
 
-import bittech.lib.utils.Config;
+import bittech.lib.utils.Require;
 import bittech.lib.utils.exceptions.StoredException;
 import net.satopay.satoexchange.PriceCalculator;
-import net.satopay.satoexchange.bankbots.BankBotsModule;
-import net.satopay.satoexchange.bankbots.BankTxReceivedEvent;
-import net.satopay.satoexchange.fiat.Banks;
-import net.satopay.satoexchange.fiat.Payments;
-import net.satopay.satoexchange.fiat.Payments.Payment;
-import net.satopay.satoexchange.hub.HubModule;
-import net.satopay.satoexchange.ln.Ln;
+import net.satopay.satoexchange.PriceCalculator.Calculation;
+import net.satopay.satoexchange.banks.BanksModule;
+import net.satopay.satoexchange.banks.bots.BankTxReceivedEvent;
+import net.satopay.satoexchange.core.Payments.Payment;
+import net.satopay.satoexchange.ln.LnModule;
+import net.satopay.satoexchange.web.commands.GetPaymentStatusResponse;
 
-public class CoreModule implements AutoCloseable, BankTxReceivedEvent {
+public class CoreModule implements BankTxReceivedEvent, AutoCloseable {
+		
+	private final PriceCalculator priceCalculator;	
+	private final Payments payments;
 
-	public final SatoexConfig satoexConfig;
-	public final BankBotsModule bankBotsModule;
-	public final Banks banks;
-	public final PriceCalculator priceCalculator;
-	public final Payments payments;
-	public final Ln ln;
-	public final HubModule hubModule;
-
-	public CoreModule() {
-		try {
-			satoexConfig = Config.getInstance().getEntry("satoex", SatoexConfig.class);
-			bankBotsModule = new BankBotsModule(false);
-			banks = Banks.load();
-			priceCalculator = new PriceCalculator(banks);
+	private final LnModule lnModule;
+	
+	public CoreModule(BanksModule banksModule, LnModule lnModule) {
+		try {			
+			this.lnModule = Require.notNull(lnModule, "lnModule");
+			
 			payments = Payments.load();
-			ln = new Ln();
-			hubModule = new HubModule(this);
+					
+			priceCalculator = new PriceCalculator(banksModule);
 
-			ln.registerInvoicePaidListener(payments);
-			bankBotsModule.registerBankTxReceivedListener(this);
+			lnModule.registerInvoicePaidListener(payments);
+			banksModule.registerBankTxReceivedListener(this);
 		} catch (Exception ex) {
 			throw new StoredException("Cannot run core module", ex);
 		}
 	}
 
-	@Override
-	public void close() {
-		hubModule.close();
-		ln.close();
-		bankBotsModule.close();
-	}
-
+	
 	@Override
 	public void onBankTxReceived(String title, BigDecimal amount) {
 		if (payments.hasPayment(title)) {
 			Payment p = payments.received(title, amount);
-			ln.payInvoice(p.lnInvocie, p.calculation.satoshis);
+			lnModule.payInvoice(p.lnInvocie, p.calculation.satoshis);
 		}
+	}
+	
+	public Calculation calculatePrice(String calculationId, int satoshis) {
+		return priceCalculator.calculate(calculationId, satoshis);
+	}
+	
+	public Payment fiatsReceived(String id, BigDecimal amount) {
+		return payments.received(id, amount);
+	}
+	
+	public Payment newPayment(Calculation calculation, String lnInvoice) {
+		return payments.newPayment(calculation, lnInvoice);
+	}
+	
+	public Calculation getPriceCalculation(String id) {
+		return priceCalculator.get(id);
+	}
+	
+	public GetPaymentStatusResponse getPaymentStatus(String id) {
+		return payments.getStatus(id);
+	}
+	
+	@Override
+	public void close() {
+		// Nothing for now
 	}
 
 }
